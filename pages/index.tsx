@@ -1,18 +1,25 @@
 import React, { useState } from "react";
+import api from "../services/axios";
 
 export default function Produtos() {
   const [productPrice, setProductPrice] = useState(0);
-  const [phones, setPhones] = useState<Phone[]>([
-    { price: 1000, name: "Xiaomi Mi A3", picture: "" },
-    { price: 800, name: "Samsung M1", picture: "" },
-  ]);
+  const [phones, setPhones] = useState<Phone[]>([]);
 
   const handleChangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const price = parseInt(e.target.value) || 0;
     setProductPrice(price);
   };
 
-  const handleSearch = async () => {};
+  const handleSearch = async () => {
+    try {
+      const results = await api.get<Phone[]>("phones", {
+        params: { price: productPrice },
+      });
+      results.data && setPhones(results.data);
+    } catch (err) {
+      console.log("deu ruim amigao", err);
+    }
+  };
 
   return (
     <div>
